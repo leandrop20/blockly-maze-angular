@@ -1,0 +1,182 @@
+.visualization { position: relative; }
+
+#svgMap { overflow: hidden; }
+
+.capacityBubble {
+	position: absolute;
+	margin-top: -0.5em;
+	left: 10px;
+	top: 375px;
+	width: 380px;
+}
+
+.capacity {
+	display: none;
+	color: #FFFFFF;
+	padding: 5px 1em;
+	border-radius: 15px;
+	background-color: rgba(64,64,64,.7);
+	font-family: sans-serif;
+	font-size: large;
+}
+
+.capacityNumber { font-weight: bold; }
+
+/* 'Look' icon */
+#look>path {
+	display: none;
+	fill: none;
+	stroke-width: 10;
+	stroke-linecap: round;
+	stroke-opacity: .7;
+}
+
+button {
+	margin: 5px;
+	padding: 10px;
+	border-radius: 4px;
+	border: 1px solid #DDDDDD;
+	font-size: large;
+	background-color: #EEEEEE;
+	color: #000000;
+}
+button.primary {
+	border: 1px solid #DD4B39;
+	background-color: #DD4B39;
+	color: #FFFFFF;
+}
+button.secondary {
+	border: 1px solid #4D90FE;
+	background-color: #4D90FE;
+	color: #FFFFFF;
+}
+button.primary > img, button.secondary > img { opacity: 1; }
+button>img {
+	opacity: .6;
+	vertical-align: text-bottom;
+}
+button:hover:not(:disabled) > img { opacity: 1; }
+button:active:not(:disabled) { border: 1px solid #888888 !important; }
+button:hover:not(:disabled) { box-shadow: 2px 2px 5px #888888; }
+
+.icon21 {
+	height: 21px;
+	width: 21px;
+	background-image: url(../../../assets/blockly/icons.png);
+}
+.link { background-position: 0 0; }
+.camera { background-position: -21px 0; }
+.stop { background-position: -42px 0; }
+.run { background-position: -63px 0; }
+.gallery { background-position: -63px -21px; }
+.close { background-position: -42px -42px; }
+
+.workspace {
+    width: calc(100% - 410px);
+    height: 460px;
+    position: absolute;
+    left: 410px;
+    top: 0;
+    z-index: 0;
+}
+
+/*	//////////////////	DIALOG	/////////////////	*/
+
+#dialog {
+	visibility: hidden;
+	background-color: #FFFFFF;
+	color: #000000;
+	border: 1px solid #CCCCCC;
+	position: absolute;
+	border-radius: 8px;
+	box-shadow: 5px 5px 5px #888888;
+	padding: 10px;
+	font-family: sans-serif;
+}
+
+#dialogBorder {
+	visibility: hidden;
+	position: absolute;
+	background-color: #FFFFFF;
+	color: #000000;
+	border: 1px solid #000000;
+	border-radius: 6px;
+	box-shadow: 5px 5px 5px #888888;
+}
+
+#dialogShadow {
+	visibility: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background-color: #000000;
+	opacity: .3
+}
+
+.dialogAnimate {
+	transition-property: width height left top opacity;
+	transition-duration: .2s;
+	transition-timing-function: linear;
+}
+
+.dialog .header {
+	height: 25px;
+	margin: -10px -10px 15px;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	background-color: #DDDDDD;
+	cursor: move;
+}
+
+.dialogHiddenContent {
+	visibility: hidden;
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: -1;
+}
+
+#playerSpin {
+	height: 50px;
+	width: 49px;
+	background-position: -343px 0;
+	margin-top: 10px;
+	position: absolute;
+	background-image: url('/assets/maze/images/pegman.png');
+}
+
+#dialog button { min-width: 4em; }
+
+.farSide { text-align: right; }
+
+#containerCode {
+	direction: ltr;
+	background-color: #EEEEEE;
+	padding: 5px;
+	margin: 0 3ex;
+	font-size: large;
+	overflow: auto;
+	max-height: 200px;
+}
+
+::ng-deep .helpMenuFake {
+	border-radius: 4px;
+	background-color: #BFCDDE;
+	color: #000000;
+	padding: 0 1ex;
+	cursor: default;
+}
+
+#sampleOneTopBlock {
+	height: 80px;
+	width: 250px;
+}
+
+img[src$="help_up.png"], img[src$="help_down.png"] {
+	height: 64px;
+	width: 23px;
+}
+img[src$="help_up.png"] { margin: -20px 10px 0; }
+img[src$="help_down.png"] { margin: 0 10px -20px; }

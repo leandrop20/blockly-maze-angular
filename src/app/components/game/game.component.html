@@ -1,0 +1,183 @@
+<div #stage class="visualization">
+	<svg #svgMap id="svgMap" version="1.1" width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+		<g id="look">
+			<path d="M 0,-15 a 15 15 0 0 1 15 15"></path>
+			<path d="M 0,-35 a 35 35 0 0 1 35 35"></path>
+			<path d="M 0,-55 a 55 55 0 0 1 55 55"></path>
+		</g>
+	</svg>
+	<div id="capacityBubble" class="capacityBubble">
+		<div id="capacity" class="capacity"></div>
+	</div>
+</div>
+
+<div class="buttons">
+	<button #runButton id="runButton" class="primary" (click)="onRun()"
+			title="Faz o jogador executar o que os blocos dizem.">
+		<img src="assets/blockly/1x1.gif" class="run icon21"> Executar
+	</button>
+	<button #resetButton id="resetButton" class="primary" style="display: none" (click)="onReset()"
+			title="Coloca o jogador de volta ao início do labirinto.">
+		<img src="assets/blockly/1x1.gif" class="stop icon21"> Reiniciar
+	</button>
+</div>
+
+<div #blocklyStage class="workspace" id="blocklyDiv"></div>
+
+<!-- DIALOG -->
+<div id="dialogShadow" class="dialogAnimate"></div>
+<div id="dialogBorder"></div>
+<div id="dialog" class="dialog">
+	<div class="header"></div>
+</div>
+<!-- DIALOG DONE -->
+<div id="dialogDone" class="dialogHiddenContent">
+	<div style="font-size: large; margin: 1em;">Parabéns!</div>
+	<div id="dialogLinesText" style="font-size: large; margin: 1em;"></div>
+	<pre id="containerCode"></pre>
+	<div id="dialogDoneText" style="font-size: large; margin: 1em;"></div>
+	<img id="playerSpin" src="assets/blockly/1x1.gif">
+	<div id="dialogDoneButtons" class="farSide" style="padding: 1ex 3ex 0">
+		<button id="doneCancel">Retornar</button>
+		<button id="doneOk" class="secondary">Continuar</button>
+	</div>
+</div>
+<!-- ABORT DIALOG -->
+<div id="dialogAbort" class="dialogHiddenContent">
+	Este nível é extremamente difícil. Você deseja pulá-lo e ir ao próximo jogo?
+	Você sempre pode voltar mais tarde.
+	<div class="farSide" style="padding: 1ex 3ex 0">
+		<button id="abortCancel">Retornar</button>
+		<button id="abortOk" class="secondary">Continuar</button>
+	</div>
+</div>
+<!-- OK -->
+<!-- <div class="farSide" style="padding: 1ex 3ex 0">
+	<button class="secondary" onclick="BlocklyDialogs.hideDialog(true)">OK</button>
+</div> -->
+
+<!-- ////////////////////////	HELP	///////////////////////// -->
+<!-- LEVEL 1 -->
+<div id="dialogHelpStack" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td><img src="assets/blockly/help.png"></td>
+			<td>&nbsp;</td>
+			<td>Empilhe alguns blocos 'avançar' juntos para me ajudar a alcançar o objetivo.</td>
+			<td valign="top"><img src="assets/blockly/help_stack.png" class="mirrorImg" height=63 width=136></td>
+		</tr>
+	</table>
+</div>
+<div id="dialogHelpOneTopBlock" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td><img src="assets/blockly/help.png"></td>
+			<td>&nbsp;</td>
+			<td>
+				Neste nível, você deve empilhar todos os blocos na área de trabalho branca.
+				<div id="sampleOneTopBlock" class="readonly"></div>
+			</td>
+		</tr>
+	</table>
+</div>
+<div id="dialogHelpRun" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td>Execute seu programa para ver o que acontece.</td>
+			<td rowspan=2><img src="assets/blockly/help.png"></td>
+		</tr>
+		<tr>
+			<td>
+				<div><img src="assets/blockly/help_run.png" class="mirrorImg" height=27 width=141></div>
+			</td>
+		</tr>
+	</table>
+</div>
+<!-- LEVEL 2 -->
+<div id="dialogHelpReset" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td>Seu programa não resolveu o labirinto. Aperte 'Reiniciar' e tente novamente.</td>
+			<td rowspan=2><img src="assets/blockly/help.png"></td>
+		</tr>
+		<tr>
+			<td>
+				<div><img src="assets/blockly/help_run.png" class="mirrorImg" height=27 width=141></div>
+			</td>
+		</tr>
+	</table>
+</div>
+<!-- LEVEL 3 -->
+<div id="dialogHelpRepeat" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td><img src="assets/blockly/help_up.png"></td>
+			<td>Alcance o fim deste caminho usando apenas dois blocos. Use 'repetir' para executar um bloco mais de uma vez.</td>
+			<td><img src="assets/blockly/help.png"></td>
+		</tr>
+	</table>
+</div>
+<!-- LEVEL 3 e 4 -->
+<div id="dialogHelpCapacity" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td><img src="assets/blockly/help.png"></td>
+			<td>&nbsp;</td>
+			<td>Você usou todos os blocos para este nível. Para criar um novo bloco, você primeiro deve deletar um bloco existente.</td>
+		</tr>
+	</table>
+</div>
+<div id="dialogHelpRepeatMany" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td><img src="assets/blockly/help_up.png"></td>
+			<td>Você pode encaixar mais de um bloco dentro de um bloco 'repetir'.</td>
+			<td><img src="assets/blockly/help.png"></td>
+		</tr>
+	</table>
+</div>
+<!-- LEVEL 6 -->
+<div id="dialogHelpIf" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td><img src="assets/blockly/help_up.png"></td>
+			<td>Um bloco 'se' fará alguma coisa apenas se a condição for verdadeira. Tente virar á esquerda se houver um caminho para a esquerda.</td>
+			<td><img src="assets/blockly/help.png"></td>
+		</tr>
+	</table>
+</div>
+<!-- LEVEL 7 -->
+<div id="dialogHelpMenu" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td><img src="assets/blockly/help_up.png"></td>
+			<td id="helpMenuText">Clique em %1 no bloco 'se' para mudar sua condição.</td>
+			<td><img src="assets/blockly/help.png"></td>
+		</tr>
+	</table>
+</div>
+<!-- LEVEL 9 -->
+<div id="dialogHelpIfElse" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td><img src="assets/blockly/help_down.png"></td>
+			<td>Blocos se-senão farão uma coisa ou outra.</td>
+			<td><img src="assets/blockly/help.png"></td>
+		</tr>
+	</table>
+</div>
+<!-- LEVEL 10 -->
+<div id="dialogHelpWallFollow" class="dialogHiddenContent">
+	<table>
+		<tr>
+			<td><img src="assets/blockly/help.png"></td>
+			<td>&nbsp;</td>
+			<td>Você consegue resolver este labirinto complicado? Tente seguir a parede da mão esquerda. Apenas para programadores avançados!
+				<div class="farSide" style="padding: 1ex 3ex 0">
+					<!-- onclick="BlocklyDialogs.hideDialog(true)" -->
+					<button class="secondary">OK</button>
+				</div>
+			</td>
+		</tr>
+	</table>
+</div>
