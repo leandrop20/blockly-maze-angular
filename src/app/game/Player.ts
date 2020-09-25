@@ -31,7 +31,7 @@ export class Player {
 		this.pidList = [];
 		this.coord = new Coord();
 
-		let clip = Blockly.utils.dom.createSvgElement('clipPath', { 
+		var clip: any = Blockly.utils.dom.createSvgElement('clipPath', { 
 			id: 'playerClipPath'
 		}, this.svg);
 
@@ -41,7 +41,7 @@ export class Player {
 			height: Player.HEIGHT
 		}, clip);
 
-		let icon = Blockly.utils.dom.createSvgElement('image', {
+		var icon: any = Blockly.utils.dom.createSvgElement('image', {
 			id: 'player',
 			width: Player.WIDTH * 21,//49 * 21 = 1029
 			height: Player.HEIGHT,
@@ -76,14 +76,14 @@ export class Player {
 			}, this.stepSpeed * 5));
 		} else {
 			this.coord.d = Number(direction);
-			let coord: Coord = new Coord(this.coord.x, this.coord.y, this.coord.d * 4);
+			var coord: Coord = new Coord(this.coord.x, this.coord.y, this.coord.d * 4);
 			this.setPosition(coord);
 		}
 	}
 
 	setPosition(coord: Coord, optAngle: number = null) {
-		let player = this.svg.children.player;
-		let clipRect = this.svg.children.playerClipPath.children.clipRect;
+		var player: any = this.svg.children.player;
+		var clipRect: any = this.svg.children.playerClipPath.children.clipRect;
 
 		player.setAttribute('x', coord.x * this.SQUARE_SIZE - coord.d * Player.WIDTH + 1);
 		player.setAttribute('y', this.SQUARE_SIZE * (coord.y + 0.5) - Player.HEIGHT / 2 - 8);
@@ -145,8 +145,8 @@ export class Player {
 	}
 
 	scheduleFinish(withSound: boolean) {
-		let direction16: number = MapUtils.constrainDirection16(this.coord.d * 4);
-		let coord: Coord = new Coord(this.coord.x, this.coord.y, 16);
+		var direction16: number = MapUtils.constrainDirection16(this.coord.d * 4);
+		var coord: Coord = new Coord(this.coord.x, this.coord.y, 16);
 
 		this.setPosition(coord);
 
@@ -171,10 +171,10 @@ export class Player {
 	}
 
 	scheduleFail(forward: boolean) {
-		let deltaX: number = 0;
-		let deltaY: number = 0;
+		var deltaX: number = 0;
+		var deltaY: number = 0;
 
-		let direction: DirectionType = (String(this.coord.d) as DirectionType);
+		var direction: DirectionType = (String(this.coord.d) as DirectionType);
 		
 		switch (direction) {
 			case DirectionType.NORTH: deltaY = -1; break;
@@ -192,8 +192,8 @@ export class Player {
 			deltaX /= 4;
 			deltaY /= 4;
 
-			let direction16: number = MapUtils.constrainDirection16(this.coord.d * 4);
-			let coord = new Coord(
+			var direction16: number = MapUtils.constrainDirection16(this.coord.d * 4);
+			var coord = new Coord(
 				this.coord.x + deltaX,
 				this.coord.y + deltaY,
 				direction16
@@ -230,8 +230,8 @@ export class Player {
 			}, this.stepSpeed * 3));
 		} else {
 			// Add a small random delta away from the grid.
-			let deltaZ = (Math.random() - 0.5) * 10;
-			let deltaD = (Math.random() - 0.5) / 2;
+			var deltaZ: number = (Math.random() - 0.5) * 10;
+			var deltaD: number = (Math.random() - 0.5) / 2;
 
 			deltaX += (Math.random() - 0.5) / 4;
 			deltaY += (Math.random() - 0.5) / 4;
@@ -239,7 +239,7 @@ export class Player {
 			deltaX /= 8;
 			deltaY /= 8;
 
-			let acceleration = 0;
+			var acceleration: number = 0;
 
 			if (this.crashType == CrashType.FALL) {
 				acceleration = 0.01;
@@ -249,7 +249,7 @@ export class Player {
 				SoundManager.play(SoundType.FAIL);
 			}, this.stepSpeed * 2));
 
-			let setPosition = (n) => {
+			var setPosition: Function = (n) => {
 				return () => {
 					let direction16: number = 
 						MapUtils.constrainDirection16(this.coord.d * 4 + deltaD * n);

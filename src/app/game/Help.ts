@@ -8,6 +8,7 @@ export class Help {
 	static init(workspace: any, currentLevelID: number) {
 		Help.instance = new Help();
 		Help.instance.workspace = workspace;
+		Help.instance.isOpened = false;
 		Help.instance.currentLevelID = currentLevelID;
 	}
 
@@ -16,8 +17,10 @@ export class Help {
 	*	@param {Blockly.Events.Abstract=} optEvent Custom data for event.
 	*/
 	static showIfHas(status: StatusType, optEvent: any = null) {
-		Help.instance.show(status, optEvent);
+		// Help.instance.show(status, optEvent);
 	}
+
+	static hide(animation: boolean) { Help.instance.hide(animation); }
 
 	private workspace: any;
 	private origin: any;
@@ -34,16 +37,16 @@ export class Help {
 			return;
 		}
 
-		let header: any = document.getElementById('dialog').children[0];
+		var header: any = document.getElementById('dialog').children[0];
 		header.style.display = 'none';
 
-		let userBlocks: string = Blockly.Xml.domToText(
+		var userBlocks: string = Blockly.Xml.domToText(
 			Blockly.Xml.workspaceToDom(this.workspace.workspace));
-		let toolbar: any[] = this.workspace.workspace.flyout_.workspace_.getTopBlocks(true);
+		var toolbar: any[] = this.workspace.workspace.flyout_.workspace_.getTopBlocks(true);
 		
-		let content: any = null;
-		let origin: any = null;
-		let style: any = null;
+		var content: any = null;
+		var origin: any = null;
+		var style: any = null;
 
 		switch (this.currentLevelID) {
 			case 1:
@@ -53,10 +56,10 @@ export class Help {
 					origin = toolbar[0].getSvgRoot();
 
 				} else {
-					let topBlocks: any[] = this.workspace.workspace.getTopBlocks(true);
+					var topBlocks: any[] = this.workspace.workspace.getTopBlocks(true);
 
 					if (topBlocks.length > 1) {
-						let xml: any[] = [`
+						var xml: any[] = [`
 							<xml>
 								<block type="ucode_moveForward" x="10" y="10">
 									<next>
@@ -107,17 +110,17 @@ export class Help {
 					style = { width: '430px', top: '310', left: '50px' };
 					origin = document.getElementById('capacityBubble');
 				} else {
-					let showHelp: boolean = true;
+					var showHelp: boolean = true;
 					// Only show help if there is not a loop with two nested blocks.
-					let blocks: any[] = this.workspace.workspace.getAllBlocks();
+					var blocks: any[] = this.workspace.workspace.getAllBlocks();
 					
 					for (let block of blocks) {
 						if (block.type != 'ucode_forever') { continue; }
 
-						let j = 0;
+						var j = 0;
 
 						while (block) {
-							let kids = block.getChildren();
+							var kids = block.getChildren();
 							block = kids.length ? kids[0] : null;
 							j++
 						}
@@ -143,12 +146,12 @@ export class Help {
 				}
 				break;
 			case 7: 
-				let span: any = document.createElement('span');
+				var span: any = document.createElement('span');
 				span.className = 'helpMenuFake';
-				let options: string[] = [' frente', 'esquerda ↺', 'direita ↻'];
-				let prefix: number = Object(Blockly).utils.string.commonWordPrefix(options);
-				let suffix: number = Object(Blockly).utils.string.commonWordSuffix(options);
-				let option: string;
+				var options: string[] = [' frente', 'esquerda ↺', 'direita ↻'];
+				var prefix: number = Object(Blockly).utils.string.commonWordPrefix(options);
+				var suffix: number = Object(Blockly).utils.string.commonWordSuffix(options);
+				var option: string;
 
 				if (suffix) {
 					option = options[0].slice(prefix, -suffix);
@@ -159,10 +162,10 @@ export class Help {
 				// Add dropdown arrow: "option ▾" (LTR) or "▾ אופציה" (RTL)
 				span.textContent = option + ' ' + Blockly.FieldDropdown.ARROW_CHAR;
 				// Inject fake dropdown into message.
-				let container: any = document.getElementById('helpMenuText');
-				let msg: string = container.textContent;
+				var container: any = document.getElementById('helpMenuText');
+				var msg: string = container.textContent;
 				container.textContent = '';
-				let parts: string[] = msg.split(/%\d/);
+				var parts: string[] = msg.split(/%\d/);
 
 				for (let i = 0; i < parts.length; i++) {
 					container.appendChild(document.createTextNode(parts[i]));
@@ -213,9 +216,9 @@ export class Help {
 		this.origin = origin;
 		this.dialogDispose = disposeFunc;
 
-		let dialog: any = document.getElementById('dialog');
-		let shadow: any = document.getElementById('dialogShadow');
-		let border: any = document.getElementById('dialogBorder');
+		var dialog: any = document.getElementById('dialog');
+		var shadow: any = document.getElementById('dialogShadow');
+		var border: any = document.getElementById('dialogBorder');
 
 		// Copy all the specified styles to the dialog.
 		for (let name in style) { dialog.style[name] = style[name]; }
@@ -263,9 +266,9 @@ export class Help {
 		this.dialogDispose && this.dialogDispose();
 		this.dialogDispose = null;
 
-		let origin: any = (animate === false) ? null : this.origin;
-		let dialog: any = document.createElement('dialog');
-		let shadow: any = document.createElement('dialogShadow');
+		var origin: any = (animate === false) ? null : this.origin;
+		var dialog: any = document.createElement('dialog');
+		var shadow: any = document.createElement('dialogShadow');
 
 		shadow.style.opacity = 0;
 
@@ -273,7 +276,7 @@ export class Help {
 			shadow.style.zIndex = -1;
 			shadow.style.visibility = 'hidden';
 
-			let border = document.getElementById('dialogBorder');
+			var border = document.getElementById('dialogBorder');
 			border.style.visibility = 'hidden';
 		}
 
@@ -289,12 +292,12 @@ export class Help {
 		dialog.style.visibility = 'hidden';
 		dialog.style.zIndex = -1;
 
-		let header = document.getElementById('dialogHeader');
+		var header = document.getElementById('dialogHeader');
 
 		if (header) { header.parentNode.removeChild(header); }
 
 		while (dialog.firstChild) {
-			let content = dialog.firstChild;
+			var content = dialog.firstChild;
 			content.className += 'dialogHiddenContent';
 			document.body.appendChild(content);
 		}

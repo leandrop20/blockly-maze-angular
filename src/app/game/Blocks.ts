@@ -135,27 +135,27 @@ export class Blocks {
 		};
 
 		Object(Blockly).JavaScript['ucode_turn'] = function (block) {
-			let dir: string = block.getFieldValue('DIR');
+			var dir: string = block.getFieldValue('DIR');
 			return dir + '(\'block_id_' + block.id + '\');\n';
 		};
 
 		Object(Blockly).JavaScript['ucode_if'] = function (block) {
-			let argument: string = block.getFieldValue('DIR') + '(\'block_id_' + block.id + '\')';
-			let branch: string = Object(Blockly).JavaScript.statementToCode(block, 'DO');
+			var argument: string = block.getFieldValue('DIR') + '(\'block_id_' + block.id + '\')';
+			var branch: string = Object(Blockly).JavaScript.statementToCode(block, 'DO');
 			
 			return 'if (' + argument + ') {\n' + branch + '}\n';
 		};
 
 		Object(Blockly).JavaScript['ucode_ifElse'] = function (block) {
-			let argument: string = block.getFieldValue('DIR') + '(\'block_id_' + block.id + '\')';
-			let branch0: string = Object(Blockly).JavaScript.statementToCode(block, 'DO');
-			let branch1: string = Object(Blockly).JavaScript.statementToCode(block, 'ELSE');
+			var argument: string = block.getFieldValue('DIR') + '(\'block_id_' + block.id + '\')';
+			var branch0: string = Object(Blockly).JavaScript.statementToCode(block, 'DO');
+			var branch1: string = Object(Blockly).JavaScript.statementToCode(block, 'ELSE');
 
 			return 'if (' + argument + ') {\n' + branch0 + '} else {\n' + branch1 + '}\n';
 		};
 
 		Object(Blockly).JavaScript['ucode_forever'] = function (block) {
-			let branch: string = Object(Blockly).JavaScript.statementToCode(block, 'DO');
+			var branch: string = Object(Blockly).JavaScript.statementToCode(block, 'DO');
 
 			if (Object(Blockly).JavaScript.INFINITE_LOOP_TRAP) {
 				branch = Object(Blockly).JavaScript.INFINITE_LOOP_TRAP

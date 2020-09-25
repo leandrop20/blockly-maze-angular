@@ -10,6 +10,7 @@ export const MESSAGES: any = {
 	resetTooltip: 'Parar a execução do programa e resetar o nível.',
 	resetProgram: 'Reiniciar',
 	help: 'Ajuda',
+	congratulations: 'Parabéns',
 	dialogOk: 'OK',
 	dialogCancel: 'Cancelar',
 	catLogic: 'Lógica',

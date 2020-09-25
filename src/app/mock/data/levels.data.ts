@@ -3,8 +3,8 @@ import { Level } from '../../interfaces/Level';
 export const LEVELS: Level[] = [
 	{
 		id: 1,
-		name: 'Nível 1',
-		instruction: 'Faça a fase.',
+		name: 'Level 1',
+		instruction: 'solve the problem.',
 		blocks: `
 			<block type="ucode_moveForward"></block>
 			<block type="ucode_turn"><field name="DIR">turnLeft</field></block>

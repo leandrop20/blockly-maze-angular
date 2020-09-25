@@ -12,18 +12,18 @@ import { StatusType } from '../../enums/StatusType';
 import { DirectionType } from '../../enums/DirectionType';
 import { InterpreterType } from '../../enums/InterpreterType';
 import { CommandType } from '../../enums/CommandType';
-import { DialogType } from '../../enums/DialogType';
 import { Coord } from '../../entities/Coord';
 import { MapUtils } from '../../game/utils/MapUtils';
 import { SoundManager } from '../../game/SoundManager';
-import { Dialog } from '../../game/Dialog';
+import { Popup } from '../../game/Popup';
 import { Help } from '../../game/Help';
 import { SKINS } from '../../mock/data/skins.data';
 import { LEVELS } from '../../mock/data/levels.data';
 
 @Component({
 	selector: 'app-game',
-	templateUrl: './game.component.html', styleUrls: ['./game.component.css']
+	templateUrl: './game.component.html',
+	styleUrls: ['./game.component.css']
 })
 
 export class GameComponent implements AfterViewInit {
@@ -34,6 +34,7 @@ export class GameComponent implements AfterViewInit {
 	@ViewChild('blocklyStage') blocklyStage: ElementRef;
 	@ViewChild('runButton') runBt: ElementRef;
 	@ViewChild('resetButton') resetBt: ElementRef;
+	@ViewChild('popup') popup: ElementRef;
 
 	private map: Map;
 	private workspace: Workspace;
@@ -42,7 +43,7 @@ export class GameComponent implements AfterViewInit {
 	private running: boolean;
 	private log: Log[];
 	private skin: Skin;
-	public level:Level;
+	public level: Level;
 
 	constructor() {
 		GameComponent.instance = this;
@@ -63,7 +64,7 @@ export class GameComponent implements AfterViewInit {
 
 		this.workspace = new Workspace(this.level, this.skin.marker, this.updateCapacity);
 
-		Dialog.init(this.workspace);
+		Popup.init(this.popup.nativeElement, this.workspace);
 		Help.init(this.workspace, this.level.id);
 		SoundManager.load(this.skin, this.workspace.workspace);
 
@@ -78,7 +79,7 @@ export class GameComponent implements AfterViewInit {
 		if (!this.running) {
 			this.running = true;
 
-			Dialog.hide(false);
+			Help.hide(false);
 
 			// Only allow a single top block on level 1.
 			if (this.level.id == 1 && this.workspace.workspace.getTopBlocks(false).length > 1
@@ -113,15 +114,15 @@ export class GameComponent implements AfterViewInit {
 		this.log = [];
   		// Blockly.selected && Blockly.selected.unselect();
 
-		let code: string = this.workspace.getCode();
+		var code: string = this.workspace.getCode();
 		this.status = StatusType.UNSET;
 
-		let interpreter: Interpreter = new Interpreter(code, (i, s) => {
+		var interpreter: Interpreter = new Interpreter(code, (i, s) => {
 			Run.exec(i, s, this.workspace.workspace, this.checkMove);
 		});
 
 		try {
-			let ticks: number = 10000;
+			var ticks: number = 10000;
 
 			while (interpreter.step()) {
 				if (ticks-- == 0) {
@@ -176,9 +177,9 @@ export class GameComponent implements AfterViewInit {
 		}
 
 		// If moving backward, flip the effective direction.
-		let effectiveDirection: number = this.map.player.coord.d + Number(direction);
+		var effectiveDirection: number = this.map.player.coord.d + Number(direction);
 		direction = (String(MapUtils.constrainDirection4(effectiveDirection)) as DirectionType);
-		let command: CommandType;
+		var command: CommandType;
 
 		switch (direction) {
 			case DirectionType.NORTH:
@@ -218,7 +219,7 @@ export class GameComponent implements AfterViewInit {
 	}
 
 	isPath(direction: DirectionType, id: number): boolean {
-		let result: any = this.map.isPath(direction, id);
+		var result: any = this.map.isPath(direction, id);
 
 		if (id) { this.log.push(result.log); }
 
@@ -226,8 +227,8 @@ export class GameComponent implements AfterViewInit {
 	}
 
 	animate() {
-		let player: Player = this.map.player;
-		let command = this.log.shift();
+		var player: Player = this.map.player;
+		var command: Log = this.log.shift();
 		
 		if (command) {
 			if (!command.command) {
@@ -238,33 +239,28 @@ export class GameComponent implements AfterViewInit {
 
 			this.workspace.setHighlightBlock(String(command.id));
 
+			var coord1: Coord = new Coord(player.coord.x, player.coord.y, player.coord.d * 4);
+			var coord2: Coord = new Coord(player.coord.x, player.coord.y, player.coord.d * 4);
+
 			switch (command.command) {
 				case CommandType.NORTH:
-					player.schedule(
-						new Coord(player.coord.x, player.coord.y, player.coord.d * 4),
-						new Coord(player.coord.x, player.coord.y - 1, player.coord.d * 4),
-					);
+					coord2.y -= 1;
+					player.schedule(coord1, coord2);
 					player.coord.y--;
 					break;
 				case CommandType.EAST:
-					player.schedule(
-						new Coord(player.coord.x, player.coord.y, player.coord.d * 4),
-						new Coord(player.coord.x + 1, player.coord.y, player.coord.d * 4),
-					);
+					coord2.x += 1;
+					player.schedule(coord1, coord2);
 					player.coord.x++;
 					break;
 				case CommandType.SOUTH:
-					player.schedule(
-						new Coord(player.coord.x, player.coord.y, player.coord.d * 4),
-						new Coord(player.coord.x, player.coord.y + 1, player.coord.d * 4)
-					);
+					coord2.y += 1;
+					player.schedule(coord1, coord2);
 					player.coord.y++;
 					break;
 				case CommandType.WEST:
-					player.schedule(
-						new Coord(player.coord.x, player.coord.y, player.coord.d * 4),
-						new Coord(player.coord.x - 1, player.coord.y, player.coord.d * 4)
-					);
+					coord2.x -= 1;
+					player.schedule(coord1, coord2);
 					player.coord.x--;
 					break;
 				case CommandType.LOOK_NORTH: this.map.scheduleLook(DirectionType.NORTH); break;
@@ -274,23 +270,19 @@ export class GameComponent implements AfterViewInit {
 				case CommandType.FAIL_FORWARD: player.scheduleFail(true); break;
 				case CommandType.FAIL_BACKWARD: player.scheduleFail(false); break;
 				case CommandType.TURN_LEFT:
-					player.schedule(
-						new Coord(player.coord.x, player.coord.y, player.coord.d * 4),
-						new Coord(player.coord.x, player.coord.y, player.coord.d * 4 - 4)
-					);
+					coord2.d -= 4;
+					player.schedule(coord1, coord2);
 					player.coord.d = MapUtils.constrainDirection4(player.coord.d - 1);
 					break;
 				case CommandType.TURN_RIGHT:
-					player.schedule(
-						new Coord(player.coord.x, player.coord.y, player.coord.d * 4),
-						new Coord(player.coord.x, player.coord.y, player.coord.d * 4 + 4)
-					);
+					coord2.d += 4;
+					player.schedule(coord1, coord2);
 					player.coord.d = MapUtils.constrainDirection4(player.coord.d + 1);
 					break;
 				case CommandType.FINISH:
 					player.scheduleFinish(true);
       				setTimeout(() => {
-      					Dialog.show(DialogType.CONGRATULATIONS);
+      					Popup.show();
       				}, 1000);
 					break;
 			}
@@ -300,20 +292,20 @@ export class GameComponent implements AfterViewInit {
 	}
 
 	updateCapacity() {
-		let _this: GameComponent = GameComponent.instance;
-		let remainingBlocks: number = _this.workspace.workspace.remainingCapacity();
-		let cap:any = _this.stageMap.nativeElement.children.capacityBubble.children.capacity;
+		var _this: GameComponent = GameComponent.instance;
+		var remainingBlocks: number = _this.workspace.workspace.remainingCapacity();
+		var cap: any = _this.stageMap.nativeElement.children.capacityBubble.children.capacity;
 
 		cap.style.display = (remainingBlocks == Infinity) ? 'none' : 'inline';
 
 		if (remainingBlocks != Infinity) {
 			cap.innerHTML = '';
-			let capSpan: any = document.createElement('span');
+			var capSpan: any = document.createElement('span');
 			capSpan.className = 'capacityNumber';
 			capSpan.appendChild(document.createTextNode(String(remainingBlocks)));
 
-			let msg: string = (remainingBlocks == 1) ? 'Resta %1 bloco.' : 'Restam %1 blocos.';
-			let parts: string[] = msg.split(/%\d/);
+			var msg: string = (remainingBlocks == 1) ? 'Resta %1 bloco.' : 'Restam %1 blocos.';
+			var parts: string[] = msg.split(/%\d/);
 			
 			for (let i = 0; i < parts.length; i++) {
 				cap.appendChild(document.createTextNode(parts[i]));

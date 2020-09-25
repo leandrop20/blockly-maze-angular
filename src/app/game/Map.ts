@@ -31,7 +31,7 @@ export class Map {
 		Map.width = Map.SQUARE_SIZE * Map.cols;
 		Map.height = Map.SQUARE_SIZE * Map.rows;
 
-		let scale: number = Math.max(Map.rows, Map.cols) * Map.SQUARE_SIZE;
+		var scale: number = Math.max(Map.rows, Map.cols) * Map.SQUARE_SIZE;
 		this.svg.setAttribute('viewBox', '0 0 ' + scale + ' ' + scale);
 
 		Blockly.utils.dom.createSvgElement('rect', {
@@ -43,7 +43,7 @@ export class Map {
 		}, this.svg);
 
 		if (skin.background) {
-			let tile = Blockly.utils.dom.createSvgElement('image', {
+			let tile: any = Blockly.utils.dom.createSvgElement('image', {
 				width: Map.width,
 				height: Map.height,
 				x: 0,
@@ -55,7 +55,7 @@ export class Map {
 
 		this.createSquares();
 
-		let finishMarker = Blockly.utils.dom.createSvgElement('image', {
+		var finishMarker: any = Blockly.utils.dom.createSvgElement('image', {
 			id: 'finish',
 			width: 20,
 			height: 34
@@ -67,11 +67,11 @@ export class Map {
 	}
 
 	createSquares() {
-		let tileID: number = 0;
+		var tileID: number = 0;
 
 		for (let y: number = 0; y < Map.rows; y++) {
 			for (let x: number = 0; x < Map.cols; x++) {
-				let tileShape: any = MapUtils.normalize(x, y, this.map) +
+				var tileShape: any = MapUtils.normalize(x, y, this.map) +
 					MapUtils.normalize(x, y - 1, this.map) + //NORTH
 					MapUtils.normalize(x + 1, y, this.map) + //EAST
 					MapUtils.normalize(x, y + 1, this.map) + //SOUTH
@@ -85,10 +85,10 @@ export class Map {
 					}
 				}
 
-				let left: number = TileShapes[tileShape][0];
-				let top: number = TileShapes[tileShape][1];
+				var left: number = TileShapes[tileShape][0];
+				var top: number = TileShapes[tileShape][1];
 				
-				let tileClip = Blockly.utils.dom.createSvgElement('clipPath', {
+				var tileClip: any = Blockly.utils.dom.createSvgElement('clipPath', {
 					id: 'tileClipPath' + tileID
 				}, this.svg);
 
@@ -99,7 +99,7 @@ export class Map {
 					y: y * Map.SQUARE_SIZE
 				}, tileClip);
 
-				let tile = Blockly.utils.dom.createSvgElement('image', {
+				var tile: any = Blockly.utils.dom.createSvgElement('image', {
 					'clip-path': 'url(#tileClipPath' + tileID + ')',
 					width: Map.SQUARE_SIZE * 5,
 					height: Map.SQUARE_SIZE * 4,
@@ -135,16 +135,16 @@ export class Map {
 	reset(direction: DirectionType, first: boolean) {
 		this.player.reset(direction, first);
 
-		let finishIcon: any = this.svg.children.finish;
-		let fmWidth: number = finishIcon.getAttribute('width') * 0.5;
-		let fmHeight: number = finishIcon.getAttribute('height');
+		var finishIcon: any = this.svg.children.finish;
+		var fmWidth: number = finishIcon.getAttribute('width') * 0.5;
+		var fmHeight: number = finishIcon.getAttribute('height');
 		finishIcon.setAttribute('x', Map.SQUARE_SIZE * (this.player.pEnd.x + 0.5) - fmWidth);
 		finishIcon.setAttribute('y', Map.SQUARE_SIZE * (this.player.pEnd.y + 0.6) - fmHeight);
 
-		let lookIcon: any = this.svg.children.look;
+		var lookIcon: any = this.svg.children.look;
 		lookIcon.style.display = 'none';
 		lookIcon.parentNode.appendChild(lookIcon);
-		let paths: any[] = lookIcon.getElementsByTagName('path');
+		var paths: any[] = lookIcon.getElementsByTagName('path');
 
 		for (let p of paths) {
 			p.setAttribute('stroke', this.skin.look);
@@ -156,8 +156,8 @@ export class Map {
 	*	@param {!Maze.DirectionType} d Direction (0 - 3).
 	*/
 	scheduleLook(direction: DirectionType) {
-		let x: number = this.player.coord.x;
-		let y: number = this.player.coord.y;
+		var x: number = this.player.coord.x;
+		var y: number = this.player.coord.y;
 
 		switch(direction) {
 			case DirectionType.NORTH: x += 0.5; break;
@@ -174,17 +174,17 @@ export class Map {
 
 		x *= Map.SQUARE_SIZE;
 		y *= Map.SQUARE_SIZE;
-		let deg: number = Number(direction) * 90 - 45;
+		var deg: number = Number(direction) * 90 - 45;
 
-		let lookIcon: any = this.svg.children.look;
+		var lookIcon: any = this.svg.children.look;
 		lookIcon.setAttribute('transform', 
 			'translate(' + x + ', ' + y + ') '
 			+ 'rotate(' + deg + ' 0 0) scale(.4)');
 
-		let paths: any[] = lookIcon.getElementsByTagName('path');
+		var paths: any[] = lookIcon.getElementsByTagName('path');
 		lookIcon.style.display = 'inline';
 		
-		for (let i:number = 0, path: any; (path = paths[i]); i++) {
+		for (let i: number = 0, path: any; (path = paths[i]); i++) {
 			this.player.scheduleLookStep(path, this.player.stepSpeed * i);
 		}
 	}
@@ -198,10 +198,10 @@ export class Map {
 	*	@return {boolean} True if there is a path.
 	*/
 	isPath(direction: DirectionType, id: number): any {
-		let effectiveDirection: number = this.player.coord.d + Number(direction);
+		var effectiveDirection: number = this.player.coord.d + Number(direction);
 		direction = (String(MapUtils.constrainDirection4(effectiveDirection)) as DirectionType);
-		let square: number;
-		let command: CommandType;
+		var square: number;
+		var command: CommandType;
 
 		switch (direction) {
 			case DirectionType.NORTH:
@@ -224,7 +224,7 @@ export class Map {
 				break;
 		}
 
-		let squareType: SquareType = (String(square) as SquareType);
+		var squareType: SquareType = (String(square) as SquareType);
 
 		return {
 			isPath: (squareType !== SquareType.WALL && squareType !== undefined),

@@ -34,7 +34,7 @@ export class Workspace {
 
 		Blockly.Xml.domToWorkspace(Blockly.Xml.textToDom(`
 			<xml xmlns="https://developers.google.com/blockly/xml">
-				<block type="ucode_exec" movable="false"></block>
+				<block type="ucode_exec" movable="false" deletable="false"></block>
 			</xml>
 		`), this.workspace);
 
@@ -45,6 +45,8 @@ export class Workspace {
 		}
 
 		this.workspace.addChangeListener(updateCapacity);
+		window.addEventListener('resize', this.onResize);
+		this.onResize(null);
 	}
 
 	getCode(): string {
@@ -52,10 +54,10 @@ export class Workspace {
 	}
 
 	injectReadonly(id: string, xml: any) {
-		let div: any = document.getElementById(id);
+		var div: any = document.getElementById(id);
 
 		if (!div.firstChild) {
-			let workspace: any = Blockly.inject(div, { rtl: false, readOnly: true });
+			var workspace: any = Blockly.inject(div, { rtl: false, readOnly: true });
 
 			if (typeof xml != 'string') { xml = xml.join(''); }
 
@@ -65,7 +67,7 @@ export class Workspace {
 
 	setHighlightBlock(id: string) {
 		if (id) {
-			let m: any = id.match(/^block_id_([^']+)$/);
+			var m: any = id.match(/^block_id_([^']+)$/);
 			
 			if (m) { id = m[1]; }
 		}
@@ -75,6 +77,22 @@ export class Workspace {
 
 	resetHighlightBlock() {
 		this.workspace.highlightBlock(null);
+	}
+
+	onResize(e) {
+		console.log('::implement worspace responsize::');
+		// var visualization: any = document.getElementById('visualization');
+		// var blocklyDiv: any = document.getElementById('blocklyDiv');
+
+		// var top: number = visualization.offsetTop;
+		// blocklyDiv.style.top = Math.max(10, top - window.pageYOffset) + 'px';
+		// blocklyDiv.style.left = '420px';
+		// blocklyDiv.style.width = (window.innerWidth - 440) + 'px';
+
+		// if (this.workspace) {
+		// 	this.workspace.scale = 1.0;
+		// 	Object(Blockly).svgResize(this.workspace);
+		// }
 	}
 
 }
