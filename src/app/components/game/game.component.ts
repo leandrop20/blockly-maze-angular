@@ -17,13 +17,15 @@ import { MapUtils } from '../../game/utils/MapUtils';
 import { SoundManager } from '../../game/SoundManager';
 import { Popup } from '../../game/Popup';
 import { Help } from '../../game/Help';
+import { opacity } from '../../animations/opacity';
 import { SKINS } from '../../mock/data/skins.data';
 import { LEVELS } from '../../mock/data/levels.data';
 
 @Component({
 	selector: 'app-game',
 	templateUrl: './game.component.html',
-	styleUrls: ['./game.component.css']
+	styleUrls: ['./game.component.css'],
+	animations: [opacity]
 })
 
 export class GameComponent implements AfterViewInit {
@@ -44,9 +46,11 @@ export class GameComponent implements AfterViewInit {
 	private log: Log[];
 	private skin: Skin;
 	public level: Level;
+	public overlayState: string;
 
 	constructor() {
 		GameComponent.instance = this;
+		this.overlayState = 'hide';
 	}
 
 	ngAfterViewInit() {
@@ -64,7 +68,7 @@ export class GameComponent implements AfterViewInit {
 
 		this.workspace = new Workspace(this.level, this.skin.marker, this.updateCapacity);
 
-		Popup.init(this.popup.nativeElement, this.workspace);
+		Popup.init(this.popup.nativeElement, this.workspace, this.changeOverlayState);
 		Help.init(this.workspace, this.level.id);
 		SoundManager.load(this.skin, this.workspace.workspace);
 
@@ -315,6 +319,10 @@ export class GameComponent implements AfterViewInit {
 				}
 			}
 		}
+	}
+
+	changeOverlayState(bool: boolean) {
+		GameComponent.instance.overlayState = (bool) ? 'show' : 'hide';
 	}
 
 }
