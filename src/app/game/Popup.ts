@@ -1,16 +1,18 @@
 import { MESSAGES } from '../consts/Messages';
 import { MapUtils } from '../game/utils/MapUtils';
+import { EventType } from '../enums/EventType';
 
 export class Popup {
 
 	private static instance: Popup;
 
-	static init(popup: any, workspace: any, changeOverlayState: Function) {
+	static init(popup: any, workspace: any, changeOverlayState: Function, callback: Function) {
 		Popup.instance = new Popup();
 		Popup.instance.popup = popup;
 		Popup.instance.workspace = workspace;
 		Popup.instance.isOpened = false;
 		Popup.instance.changeOverlayState = changeOverlayState;
+		Popup.instance.callback = callback;
 	}
 
 	static show() {
@@ -19,14 +21,16 @@ export class Popup {
 
 	private popup: any;
 	private workspace: any;
+	private container: any;
+	private callback: Function;
 	private isOpened: boolean;
 	private changeOverlayState: Function;
 
 	show() {
 		this.isOpened = true;
 
-		var container: any = this.popup.children[1];
-		var body: any = container.children[1];
+		this.container = this.popup.children[1];
+		var body: any = this.container.children[1];
 		var title: any = body.children[0];
 		var lines: any = body.children[1];
 		var pre: any = body.children[2];
@@ -37,7 +41,7 @@ export class Popup {
 		var code: string = this.workspace.getCode();
 		code = MapUtils.stripCode(code);
 
-		var noComments: string = code.replace(/\/\/[^\n]*/g, '');  // Inline comments.
+		var noComments: string = code.replace(/\/\/[^\n]*/g, '');// Inline comments.
 		noComments = noComments.replace(/\/\*.*\*\//g, '');  /* Block comments. */
 	    noComments = noComments.replace(/[ \t]+\n/g, '\n');  // Trailing spaces.
 	    noComments = noComments.replace(/\n+/g, '\n');  // Blank lines.
@@ -70,6 +74,37 @@ export class Popup {
 
 		this.changeOverlayState(true);
 		this.popup.style.display = 'block';
+
+		this.eventHandlers(EventType.ADD);
+	}
+
+	hide() {
+		if (!this.isOpened) { return; }
+
+		this.isOpened = false;
+
+		this.eventHandlers(EventType.REMOVE);
+
+		this.changeOverlayState(false);
+		setTimeout(() => {
+			this.popup.style.display = 'none';
+		}, 200);
+	}
+
+	eventHandlers(type: EventType) {
+		var footer: any = this.container.children[3].children;
+
+		footer.btCancel[type + 'EventListener']('click', this.onClick);
+		footer.btOk[type + 'EventListener']('click', this.onClick);
+	}
+
+	onClick(e) {
+		switch (e.target.id) {
+			case 'btCancel': Popup.instance.callback(false); break;
+			case 'btOk': Popup.instance.callback(true); break;
+		}
+		
+		Popup.instance.hide();
 	}
 
 }

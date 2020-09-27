@@ -68,12 +68,11 @@ export class GameComponent implements AfterViewInit {
 
 		this.workspace = new Workspace(this.level, this.skin.marker, this.updateCapacity);
 
-		Popup.init(this.popup.nativeElement, this.workspace, this.changeOverlayState);
+		Popup.init(this.popup.nativeElement, this.workspace,
+			this.changeOverlayState, this.onClosePopup);
 		Help.init(this.workspace, this.level.id);
 		SoundManager.load(this.skin, this.workspace.workspace);
 
-		// All other levels get interactive help.  But wait 5 seconds for the
-    	// user to think a bit before they are told what to do.
     	setTimeout(() => {
     		Help.showIfHas(this.status);
     	}, 5000);
@@ -116,7 +115,6 @@ export class GameComponent implements AfterViewInit {
 
 	execute() {
 		this.log = [];
-  		// Blockly.selected && Blockly.selected.unselect();
 
 		var code: string = this.workspace.getCode();
 		this.status = StatusType.UNSET;
@@ -323,6 +321,12 @@ export class GameComponent implements AfterViewInit {
 
 	changeOverlayState(bool: boolean) {
 		GameComponent.instance.overlayState = (bool) ? 'show' : 'hide';
+	}
+
+	onClosePopup(state: boolean) {
+		if (state) {
+			console.log('::CHECK NEXT LEVEL OR FINAL::');
+		}
 	}
 
 }
