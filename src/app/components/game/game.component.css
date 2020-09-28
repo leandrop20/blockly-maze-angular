@@ -82,7 +82,7 @@ button:hover:not(:disabled) { box-shadow: 2px 2px 5px #888888; }
 
 /*	//////////////////	POPUP	/////////////////	*/
 
-.popup { display: none; }
+.popup, .help { display: none; }
 
 .popup .overlay {
 	width: 100%;
@@ -95,7 +95,7 @@ button:hover:not(:disabled) { box-shadow: 2px 2px 5px #888888; }
 	transition: all 2s ease;
 }
 
-.popup .container {
+.popup .container, .help .container {
 	font-family: sans-serif;
 	width: 40%;
 	background-color: #FFFFFF;
@@ -147,22 +147,6 @@ button:hover:not(:disabled) { box-shadow: 2px 2px 5px #888888; }
 .popup .footer { text-align: right; }
 
 .popup button { min-width: 4em; }
-
-#dialogBorder {
-	/*visibility: hidden;*/
-	/*position: absolute;*/
-	/*background-color: #FFFFFF;*/
-	/*color: #000000;*/
-	/*border: 1px solid #000000;*/
-	/*border-radius: 6px;*/
-	/*box-shadow: 5px 5px 5px #888888;*/
-}
-
-.dialogAnimate {
-	/*transition-property: width height left top opacity;*/
-	/*transition-duration: .2s;*/
-	/*transition-timing-function: linear;*/
-}
 
 .dialogHiddenContent {
 	visibility: hidden;

@@ -37,6 +37,7 @@ export class GameComponent implements AfterViewInit {
 	@ViewChild('runButton') runBt: ElementRef;
 	@ViewChild('resetButton') resetBt: ElementRef;
 	@ViewChild('popup') popup: ElementRef;
+	@ViewChild('help') help: ElementRef;
 
 	private map: Map;
 	private workspace: Workspace;
@@ -47,10 +48,12 @@ export class GameComponent implements AfterViewInit {
 	private skin: Skin;
 	public level: Level;
 	public overlayState: string;
+	public helpState: string;
 
 	constructor() {
 		GameComponent.instance = this;
 		this.overlayState = 'hide';
+		this.helpState = 'hide';
 	}
 
 	ngAfterViewInit() {
@@ -70,7 +73,7 @@ export class GameComponent implements AfterViewInit {
 
 		Popup.init(this.popup.nativeElement, this.workspace,
 			this.changeOverlayState, this.onClosePopup);
-		Help.init(this.workspace, this.level.id);
+		Help.init(this.help.nativeElement, this.workspace, this.level.id, this.changeHelpState);
 		SoundManager.load(this.skin, this.workspace.workspace);
 
     	setTimeout(() => {
@@ -82,7 +85,7 @@ export class GameComponent implements AfterViewInit {
 		if (!this.running) {
 			this.running = true;
 
-			Help.hide(false);
+			Help.hide();
 
 			// Only allow a single top block on level 1.
 			if (this.level.id == 1 && this.workspace.workspace.getTopBlocks(false).length > 1
@@ -321,6 +324,10 @@ export class GameComponent implements AfterViewInit {
 
 	changeOverlayState(bool: boolean) {
 		GameComponent.instance.overlayState = (bool) ? 'show' : 'hide';
+	}
+
+	changeHelpState(bool: boolean) {
+		GameComponent.instance.helpState = (bool) ? 'show' : 'hide';
 	}
 
 	onClosePopup(state: boolean) {

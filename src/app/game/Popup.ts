@@ -6,7 +6,8 @@ export class Popup {
 
 	private static instance: Popup;
 
-	static init(popup: any, workspace: any, changeOverlayState: Function, callback: Function) {
+	static init(popup: any, workspace: any, changeOverlayState: Function, 
+			callback: Function) {
 		Popup.instance = new Popup();
 		Popup.instance.popup = popup;
 		Popup.instance.workspace = workspace;
@@ -20,8 +21,8 @@ export class Popup {
 	}
 
 	private popup: any;
-	private workspace: any;
 	private container: any;
+	private workspace: any;
 	private callback: Function;
 	private isOpened: boolean;
 	private changeOverlayState: Function;

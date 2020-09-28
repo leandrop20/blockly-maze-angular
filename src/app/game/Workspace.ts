@@ -80,7 +80,7 @@ export class Workspace {
 	}
 
 	onResize(e) {
-		console.log('::implement worspace responsize::');
+		console.log('::implement workspace responsive::');
 		// var visualization: any = document.getElementById('visualization');
 		// var blocklyDiv: any = document.getElementById('blocklyDiv');
 
